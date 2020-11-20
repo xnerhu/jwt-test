@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "tsc --watch",
     "start": "nodemon ./build/index.js",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "mocha -r ts-node/register src/**/*.test.ts --timeout 5000"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

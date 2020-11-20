@@ -19,9 +19,9 @@ describe('components/error/error-handler-middleware', () => {
   });
 
   describe('withErrorHandler()', () => {
-    it('should call error handler if error is not operational', () => {
+    it('should call exit app if error is not operational', () => {
       const errHandler = new ErrorHandler({ logger: null });
-      const handleStub = sandbox.stub(errHandler, 'handle');
+      const handleStub = sandbox.stub(errHandler, 'exitApp');
 
       const middleware = withErrorHandler({ errorHandler: errHandler });
       const err = new Error();
@@ -48,9 +48,9 @@ describe('components/error/error-handler-middleware', () => {
       });
     });
 
-    it('should not call error handler if error is operational', () => {
+    it('should not call exit app if error is operational', () => {
       const errHandler = new ErrorHandler({ logger: null });
-      const handleStub = sandbox.stub(errHandler, 'handle');
+      const handleStub = sandbox.stub(errHandler, 'exitApp');
 
       const middleware = withErrorHandler({ errorHandler: errHandler });
       const err = new AppError(null, null, true);
