@@ -5,20 +5,23 @@ import { Connection } from 'typeorm';
 
 import { AuthService } from '../auth';
 
-import { AppError, ErrorHandler, withErrorHandler } from '../error';
+import { ErrorHandler, withErrorHandler } from '../error';
 import { UserController, userRouter } from '../user';
 import { UserService } from '../user/user-service';
 
 interface IDeps {
   errorHandler: ErrorHandler;
-  dbConnection: Connection;
+  db: Connection;
+  userController: UserController;
+  authService: AuthService;
 }
 
-export const createServer = ({ errorHandler, dbConnection: db }: IDeps) => {
-  const authService = new AuthService({ db });
-  const userService = new UserService({ db });
-  const userController = new UserController({ authService, userService });
-
+export const createServer = ({
+  errorHandler,
+  db,
+  userController,
+  authService,
+}: IDeps) => {
   const app = express();
 
   const handler = withErrorHandler({ errorHandler });

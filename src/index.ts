@@ -1,13 +1,11 @@
+import { AuthService } from './components/auth';
 import { RefreshTokenEntity } from './components/auth/refresh-token-entity';
-import {
-  ErrorHandler,
-  handleNodeErrors,
-  withErrorHandler,
-} from './components/error';
+import { ErrorHandler, handleNodeErrors } from './components/error';
 import { WinstonFactory } from './components/logger';
 import { WinstonLogger } from './components/logger/winston-logger';
 import { createServer, createTypeormConnection } from './components/network';
-import { UserEntity } from './components/user';
+import { UserController, UserEntity } from './components/user';
+import { UserService } from './components/user/user-service';
 
 import { config } from './constants';
 
@@ -20,12 +18,13 @@ async function main() {
 
   handleNodeErrors({ errorHandler });
 
-  const dbConnection = await createTypeormConnection([
-    UserEntity,
-    RefreshTokenEntity,
-  ]);
+  const db = await createTypeormConnection([UserEntity, RefreshTokenEntity]);
 
-  const app = createServer({ errorHandler, dbConnection });
+  const authService = new AuthService({ db });
+  const userService = new UserService({ db });
+  const userController = new UserController({ authService, userService });
+
+  const app = createServer({ errorHandler, db, userController, authService });
 
   app.listen(config.network.port, () => {
     console.log(`Server listens on port ${config.network.port}!`);
